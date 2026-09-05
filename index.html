@@ -3,94 +3,229 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Game Analisis Minat & Logika Siswa SMK</title>
+  <title>Game Tes Minat & Bakat Logika Siswa</title>
   <style>
     * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-    body { background: linear-gradient(135deg, #1e3c72, #2a5298); display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 20px; }
-    .card { background: white; padding: 30px; border-radius: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); width: 100%; max-width: 650px; text-align: center; }
-    h2 { color: #1e3c72; margin-bottom: 8px; }
+    body { background: linear-gradient(135deg, #ece9e6, #ffffff); display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 20px; }
+    .card { background: white; padding: 30px; border-radius: 16px; box-shadow: 0 8px 24px rgba(0,0,0,0.1); width: 100%; max-width: 600px; text-align: center; }
+    h2 { color: #2c3e50; margin-bottom: 10px; }
     p { color: #555; font-size: 15px; line-height: 1.5; }
-    input[type="text"] { width: 100%; padding: 14px; margin: 20px 0; border: 2px solid #ccc; border-radius: 8px; font-size: 16px; outline: none; transition: 0.3s; }
-    input[type="text"]:focus { border-color: #2a5298; }
-    button { background-color: #2a5298; color: white; border: none; padding: 14px 20px; width: 100%; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; transition: 0.3s; margin-top: 10px; }
-    button:hover { background-color: #1e3c72; }
+    input[type="text"] { width: 100%; padding: 14px; margin: 20px 0; border: 2px solid #ddd; border-radius: 8px; font-size: 16px; outline: none; transition: 0.3s; }
+    input[type="text"]:focus { border-color: #3498db; }
+    button { background-color: #3498db; color: white; border: none; padding: 14px 20px; width: 100%; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; transition: 0.3s; margin-top: 10px; }
+    button:hover { background-color: #2980b9; }
     .progress-bar { width: 100%; background-color: #e0e0e0; border-radius: 10px; margin-bottom: 20px; height: 10px; overflow: hidden; }
-    .progress { width: 0%; height: 100%; background-color: #27ae60; transition: width 0.3s; }
-    .option-btn { background-color: #f8f9fa; color: #333; border: 2px solid #e9ecef; margin-bottom: 10px; text-align: left; font-weight: normal; font-size: 14px; }
-    .option-btn:hover { background-color: #e8f4fc; border-color: #2a5298; color: #1e3c72; }
+    .progress { width: 0%; height: 100%; background-color: #2ecc71; transition: width 0.3s; }
+    .option-btn { background-color: #f8f9fa; color: #333; border: 2px solid #e9ecef; margin-bottom: 12px; text-align: left; font-weight: normal; }
+    .option-btn:hover { background-color: #e8f4fc; border-color: #3498db; color: #2980b9; }
     .hidden { display: none; }
-    .result-box { background: #eaf2f8; border-left: 6px solid #2a5298; padding: 20px; text-align: left; margin-top: 20px; border-radius: 0 8px 8px 0; }
+    .result-box { background: #eef9f5; border-left: 6px solid #2ecc71; padding: 20px; text-align: left; margin-top: 20px; border-radius: 0 8px 8px 0; }
   </style>
 </head>
 <body>
 
 <div class="card">
+  <!-- Halaman Input Nama -->
   <div id="start-screen">
-    <h2>Eksplorasi Minat Siswa SMK</h2>
-    <p>Jawab pertanyaan studi kasus dan teka-teki berikut untuk mengetahui arah jurusan atau karier yang paling sesuai dengan gaya berpikirmus!</p>
+    <h2>Game Logika & Minat Siswa</h2>
+    <p>Jawablah pertanyaan teka-teki logika berikut secara jujur untuk menemukan potensi dan arah minat terbaikmu!</p>
     <input type="text" id="player-name" placeholder="Masukkan Nama Lengkap Anda..." required>
-    <button onclick="startGame()">Mulai Kuis Minat</button>
+    <button onclick="startGame()">Mulai Tes Logika</button>
   </div>
 
+  <!-- Halaman Pertanyaan -->
   <div id="quiz-screen" class="hidden">
     <div class="progress-bar"><div id="progress" class="progress"></div></div>
-    <h3 id="question-text" style="color: #1e3c72; text-align: left; font-size: 17px;"></h3>
+    <h3 id="question-text" style="color: #2c3e50; text-align: left;">Pertanyaan akan muncul di sini</h3>
     <div id="options-container"></div>
   </div>
 
+  <!-- Halaman Hasil -->
   <div id="result-screen" class="hidden">
-    <h2>Hasil Pemetaan Minat</h2>
-    <p>Halo <b id="display-name"></b>, berdasarkan analisis gaya berpikir dan logika kamu, berikut adalah potensi utama minatmu:</p>
+    <h2>Hasil Analisis Minat</h2>
+    <p>Terima kasih telah menyelesaikan tes, <b id="display-name"></b>!</p>
     <div class="result-box">
-      <h3 id="result-title" style="margin-top:0; color:#1e3c72;"></h3>
+      <h3 id="result-title" style="margin-top:0; color:#27ae60;"></h3>
       <p id="result-desc"></p>
-      <p><b>Rekomendasi Jurusan SMK/Karier:</b> <span id="result-jurusan"></span></p>
     </div>
     <p id="status-msg" style="font-size: 13px; color: #7f8c8d; margin-top: 20px;"></p>
   </div>
 </div>
 
 <script>
-  // PASTE URL GOOGLE APPS SCRIPT DI SINI
+  // PASTE URL GOOGLE APPS SCRIPT ANDA DI SINI
   const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzUh6XZ04xAHH8yCQD6uhBaGsDPZrfYmfBVdK3fij2i2lnb5HOQ7Zu89y_W4_b-Pdgc/exec";
 
-  // Soal Spesifik SMK & Umum
+  // Soal Logika dengan 6 Variasi Minat
   const questions = [
     {
-      q: "1. Ketika sekolah mengadakan pameran karya, tugas apa yang paling ingin kamu ambil?",
+      q: "1. Sebuah sistem mesin mengalami kemacetan alur kerja. Apa reaksi logismu pertama kali?",
       options: [
-        { text: "Memperbaiki peralatan listrik, sound system, atau panggung jika ada masalah.", type: "manufaktur" },
-        { text: "Membuat aplikasi pendaftaran online atau mengatur jaringan Wi-Fi acara.", type: "it" },
-        { text: "Mengatur anggaran keuangan, penjualan tiket, dan laporan rekap belanja.", type: "bisnis" },
-        { text: "Mendesain poster promosi, dekorasi stan, dan konten video acara.", type: "kreatif" },
-        { text: "Menjadi petugas PMR/K3 yang memastikan kesehatan dan keselamatan peserta.", type: "layanan" }
+        { text: "Membongkar komponen dan memperbaiki alur sistemnya.", type: "teknologi" },
+        { text: "Menganalisis data penyebab kerusakan berdasarkan teori ilmiah.", type: "sains" },
+        { text: "Mencari pola visual alternatif agar mesin tampak lebih efisien dan menarik.", type: "seni" },
+        { text: "Berdiskusi dengan tim untuk mencari solusi bersama.", type: "sosial" },
+        { text: "Menghitung kerugian finansial akibat berhentinya mesin.", type: "bisnis" },
+        { text: "Mencatat kronologi kerusakan dan menyusun laporan terstruktur.", type: "administrasi" }
       ]
     },
     {
-      q: "2. Masalah apa yang paling membuatmu merasa penasaran untuk menyelesaikannya?",
+      q: "2. Dalam menyelesaikan teka-teki pola angka (2, 4, 8, 16, ...), cara berpikirmu adalah:",
       options: [
-        { text: "Mencari tahu penyebab mesin kendaraan atau alat mekanik yang tidak mau menyala.", type: "manufaktur" },
-        { text: "Memecahkan kode error atau koneksi internet yang mendadak putus.", type: "it" },
-        { text: "Mencari strategi agar sebuah produk jualan cepat laku dan menguntungkan.", type: "bisnis" },
-        { text: "Mengubah benda biasa/bekas menjadi karya visual yang bernilai seni tinggi.", type: "kreatif" },
-        { text: "Membantu orang yang sedang sakit, stres, atau membutuhkan pertolongan pertama.", type: "layanan" }
+        { text: "Membuat algoritma atau logika pemrograman untuk memproses angka tersebut.", type: "teknologi" },
+        { text: "Mencari rumus matematika tersembunyi dan hipotesis dari pola tersebut.", type: "sains" },
+        { text: "Menggambar pola visual atau grafik dari ritme kenaikan angka itu.", type: "seni" },
+        { text: "Mengajarkan pola teka-teki ini ke teman agar mereka juga paham.", type: "sosial" },
+        { text: "Membayangkan bagaimana pola angka ini bisa melipatgandakan keuntungan.", type: "bisnis" },
+        { text: "Merekap angka-angka tersebut ke dalam tabel yang rapi.", type: "administrasi" }
       ]
     },
     {
-      q: "3. Dalam sebuah teka-teki alur kerja, logika manakah yang paling cepat kamu tangkap?",
+      q: "3. Ketika ada proyek kelompok di sekolah, peran logika apa yang paling kamu kuasai?",
       options: [
-        { text: "Pola kerja komponen mesin: Input Tenaga -> Proses Mekanik -> Gerak.", type: "manufaktur" },
-        { text: "Pola logika data: Jika X terpenuhi, maka sistem menjalankan Y.", type: "it" },
-        { text: "Pola hitung rugi-laba: Modal - Operasional = Keuntungan Bersih.", type: "bisnis" },
-        { text: "Pola komposisi visual: Perpaduan warna, bentuk, dan keseimbangan objek.", type: "kreatif" },
-        { text: "Pola hubungan manusia: Cara komunikasi empati agar orang lain merasa nyaman.", type: "layanan" }
+        { text: "Merancang alat, website, atau sarana teknis yang dibutuhkan.", type: "teknologi" },
+        { text: "Melakukan riset mendalam dan mengumpulkan fakta/data pendukung.", type: "sains" },
+        { text: "Mendesain tampilan presentasi, poster, dan ide kreatif kelompok.", type: "seni" },
+        { text: "Menjadi penengah, mendengarkan pendapat, dan membagi tugas dengan adil.", type: "sosial" },
+        { text: "Memimpin strategi, meyakinkan guru, dan menentukan target capaian.", type: "bisnis" },
+        { text: "Mengatur jadwal, menyimpan dokumen, dan mencatat alur kerja proyek.", type: "administrasi" }
       ]
     },
     {
-      q: "4. Aplikasi atau alat kerja apa yang paling menarik bagi kamu untuk dipelajari?",
+      q: "4. Bagaimana cara kamu mengambil keputusan penting saat menghadapi masalah rumit?",
       options: [
-        { text: "Perkakas bengkel, mesin CNC, alat ukur presisi, atau kelistrikan.", type: "manufaktur" },
-        { text: "Software coding (VS Code), aplikasi server, atau konfigurasi router.", type: "it" },
-        { text: "Microsoft Excel/Spreadsheet, aplikasi kasir, dan marketplace.", type: "bisnis" },
-        { text: "Adobe Photoshop/Illustrator, Canva, Premiere Pro, atau kamera digital.", type: "kreatif" },
-        { text: "Alat-alat medis dasar, stetoskop, peralatan
+        { text: "Menggunakan logika perbandingan fitur atau fungsi teknis.", type: "teknologi" },
+        { text: "Uji coba eksperimen, observasi, dan pembuktian fakta nyata.", type: "sains" },
+        { text: "Mengikuti intuisi kreatif dan sudut pandang baru yang unik.", type: "seni" },
+        { text: "Mempertimbangkan dampak keputusan tersebut terhadap orang lain.", type: "sosial" },
+        { text: "Memilih opsi yang memberikan potensi keuntungan/peluang terbesar.", type: "bisnis" },
+        { text: "Melihat aturan baku, SPO, dan alur prosedur yang ada.", type: "administrasi" }
+      ]
+    },
+    {
+      q: "5. Apa bentuk pencapaian logika yang paling membuatmu bangga?",
+      options: [
+        { text: "Berhasil merakit/membuat aplikasi atau alat mekanik yang berfungsi.", type: "teknologi" },
+        { text: "Menemukan jawaban dari fenomena alam/ilmiah yang misterius.", type: "sains" },
+        { text: "Menciptakan karya estetis/desain yang diapresiasi banyak orang.", type: "seni" },
+        { text: "Membantu seseorang memecahkan masalah pribadinya.", type: "sosial" },
+        { text: "Berhasil menjual ide/produk dan meraih keuntungan nyata.", type: "bisnis" },
+        { text: "Menyusun file, jadwal, dan sistem arsip yang sangat rapi tanpa cela.", type: "administrasi" }
+      ]
+    }
+  ];
+
+  // Deskripsi 6 Kategori Minat
+  const resultsInfo = {
+    teknologi: {
+      title: "Minat: Rekayasa & Teknologi (IT/Teknik)",
+      desc: "Kamu memiliki logika praktis dan terstruktur. Kamu sangat cocok di bidang Pemrograman, Teknik Informatika, Otomasi, Cyber Security, atau Teknik Mesin/Sipil."
+    },
+    sains: {
+      title: "Minat: Sains & Riset (Investigatif)",
+      desc: "Kamu berjiwa peneliti dengan rasa ingin tahu tinggi. Bidang yang cocok: Biologi, Kimia, Fisika, Kedokteran, Pengolahan Data (Data Science), atau Matematika Murni."
+    },
+    seni: {
+      title: "Minat: Seni Kreatif & Desain (Artistik)",
+      desc: "Logika kamu dipadukan dengan imajinasi visual yang kuat. Kategori yang sesuai: Desain Grafis, Animasi, Arsitektur, Sinematografi, atau Desain Produk."
+    },
+    sosial: {
+      title: "Minat: Layanan Sosial & Edukasi (Sosial)",
+      desc: "Kamu memiliki logika emosional dan empati yang tinggi. Sangat cocok di bidang Psikologi, Pendidikan/Guru, Hukum, Hubungan Masyarakat (PR), atau Keperawatan."
+    },
+    bisnis: {
+      title: "Minat: Bisnis & Kewirausahaan (Enterprising)",
+      desc: "Kamu berjiwa pemimpin dan persuasif dengan logika profit-oriented. Sangat pas di bidang Manajemen, Bisnis Digital, Marketing, Ekonomi, atau International Trade."
+    },
+    administrasi: {
+      title: "Minat: Administrasi & Tata Kelola (Konvensional)",
+      desc: "Kamu sangat teliti, teratur, dan menyukai keteraturan data. Sangat berbakat di bidang Akuntansi, Keuangan, Manajemen Perkantoran, Perpajakan, atau Logistics Management."
+    }
+  };
+
+  let currentQuestionIndex = 0;
+  let playerName = "";
+  let scores = { teknologi: 0, sains: 0, seni: 0, sosial: 0, bisnis: 0, administrasi: 0 };
+
+  function startGame() {
+    playerName = document.getElementById("player-name").value.trim();
+    if (!playerName) {
+      alert("Silakan masukkan nama Anda terlebih dahulu!");
+      return;
+    }
+    document.getElementById("start-screen").classList.add("hidden");
+    document.getElementById("quiz-screen").classList.remove("hidden");
+    showQuestion();
+  }
+
+  function showQuestion() {
+    const q = questions[currentQuestionIndex];
+    
+    // Update progress bar
+    const progressPercent = ((currentQuestionIndex) / questions.length) * 100;
+    document.getElementById("progress").style.width = progressPercent + "%";
+    
+    document.getElementById("question-text").innerText = q.q;
+    const container = document.getElementById("options-container");
+    container.innerHTML = "";
+
+    // Acak pilihan jawaban agar variatif
+    const shuffledOptions = [...q.options].sort(() => Math.random() - 0.5);
+
+    shuffledOptions.forEach(opt => {
+      const btn = document.createElement("button");
+      btn.innerText = opt.text;
+      btn.className = "option-btn";
+      btn.onclick = () => selectOption(opt.type);
+      container.appendChild(btn);
+    });
+  }
+
+  function selectOption(type) {
+    scores[type]++;
+    currentQuestionIndex++;
+
+    if (currentQuestionIndex < questions.length) {
+      showQuestion();
+    } else {
+      finishGame();
+    }
+  }
+
+  function finishGame() {
+    document.getElementById("progress").style.width = "100%";
+    document.getElementById("quiz-screen").classList.add("hidden");
+    document.getElementById("result-screen").classList.remove("hidden");
+
+    // Menghitung jenis minat dengan skor tertinggi
+    let highestType = Object.keys(scores).reduce((a, b) => scores[a] > scores[b] ? a : b);
+    let finalResult = resultsInfo[highestType];
+
+    document.getElementById("display-name").innerText = playerName;
+    document.getElementById("result-title").innerText = finalResult.title;
+    document.getElementById("result-desc").innerText = finalResult.desc;
+
+    sendToGoogleSheet(playerName, finalResult.title);
+  }
+
+  function sendToGoogleSheet(nama, minat) {
+    document.getElementById("status-msg").innerText = "Menyimpan hasil ke Google Sheet...";
+    
+    fetch(SCRIPT_URL, {
+      method: "POST",
+      mode: "no-cors",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ nama: nama, minat: minat })
+    })
+    .then(() => {
+      document.getElementById("status-msg").innerText = "✔ Data minat berhasil disimpan secara otomatis!";
+    })
+    .catch(err => {
+      document.getElementById("status-msg").innerText = "❌ Gagal menyimpan data.";
+      console.error(err);
+    });
+  }
+</script>
+
+</body>
+</html>
