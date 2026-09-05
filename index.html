@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Game Deteksi Minat Siswa</title>
+  <style>
+    * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    body { background-color: #f4f7f6; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
+    .card { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); width: 100%; max-width: 500px; text-align: center; }
+    h2 { color: #333; margin-bottom: 20px; }
+    input[type="text"] { width: 100%; padding: 12px; margin-bottom: 20px; border: 1px solid #ccc; border-radius: 6px; font-size: 16px; }
+    button { background-color: #4CAF50; color: white; border: none; padding: 12px 20px; width: 100%; border-radius: 6px; font-size: 16px; cursor: pointer; transition: 0.3s; margin-top: 10px; }
+    button:hover { background-color: #45a049; }
+    .option-btn { background-color: #008CBA; margin-bottom: 10px; text-align: left; }
+    .option-btn:hover { background-color: #007399; }
+    .hidden { display: none; }
+    .result-box { background: #e7f3fe; border-left: 6px solid #2196F3; padding: 15px; text-align: left; margin-top: 15px; }
+  </style>
+</head>
+<body>
+
+<div class="card">
+  <div id="start-screen">
+    <h2>Kuis Logika Minat Siswa</h2>
+    <p>Isi nama kamu untuk memulai permainan!</p>
+    <input type="text" id="player-name" placeholder="Masukkan Nama Lengkap..." required>
+    <button onclick="startGame()">Mulai Game</button>
+  </div>
+
+  <div id="quiz-screen" class="hidden">
+    <h3 id="question-text">Pertanyaan akan muncul di sini</h3>
+    <div id="options-container"></div>
+  </div>
+
+  <div id="result-screen" class="hidden">
+    <h2>Hasil Analisis Minat</h2>
+    <p>Terima kasih telah menyelesaikan kuis, <b id="display-name"></b>!</p>
+    <div class="result-box">
+      <h3 id="result-title" style="margin-top:0; color:#2196F3;"></h3>
+      <p id="result-desc"></p>
+    </div>
+    <p id="status-msg" style="font-size: 12px; color: #777; margin-top: 15px;"></p>
+  </div>
+</div>
+
+<script>
+  // PASTE URL GOOGLE APPS SCRIPT ANDA DI SINI
+  const SCRIPT_URL = "GANTI_DENGAN_URL_WEB_APP_ANDA";
+
+  const questions = [
+    {
+      q: "1. Jika ada sistem mesin yang rusak, apa yang pertama kali kamu lakukan?",
+      options: [
+        { text: "Membongkar dan menganalisis alur kerjanya", type: "teknologi" },
+        { text: "Menghitung estimasi biaya perbaikan dan dampaknya", type: "bisnis" },
+        { text: "Mencari cara alternatif yang lebih estetis/kreatif", type: "seni" }
+      ]
+    },
+    {
+      q: "2. Kamu diberikan teka-teki angka: '2, 4, 8, 16, ...'. Reaksi pertamamu?",
+      options: [
+        { text: "Langsung mencari pola rumus matematika/programnya (32)", type: "teknologi" },
+        { text: "Membayangkan bagaimana pola ini dipakai untuk grafik keuntungan", type: "bisnis" },
+        { text: "Mengubah angka-angka tersebut menjadi bentuk visual/pola gambar", type: "seni" }
+      ]
+    },
+    {
+      q: "3. Dalam sebuah proyek kelompok, peran logika apa yang paling kamu sukai?",
+      options: [
+        { text: "Menyusun struktur data, algoritma, atau teknis pelaksanaannya", type: "teknologi" },
+        { text: "Mengatur strategi, pembagian tugas, dan kalkulasi target", type: "bisnis" },
+        { text: "Merancang ide konsep visual dan penyampaian pesan yang unik", type: "seni" }
+      ]
+    }
+  ];
+
+  const resultsInfo = {
+    teknologi: {
+      title: "Minat: Sains & Teknologi (Sains/IT)",
+      desc: "Kamu memiliki logika analitis yang kuat, suka memecahkan masalah teknis, dan tertarik pada struktur sistem atau pemrograman."
+    },
+    bisnis: {
+      title: "Minat: Bisnis & Manajemen",
+      desc: "Logika kamu berfokus pada efisiensi, perhitungan risiko, pengorganisasian, dan strategi untuk mencapai hasil maksimal."
+    },
+    seni: {
+      title: "Minat: Seni Kreatif & Desain",
+      desc: "Kamu menggunakan logika intuitif. Kamu mampu melihat hubungan pola visual, konsep estetika, dan ide inovatif di luar batas konvensional."
+    }
+  };
+
+  let currentQuestionIndex = 0;
+  let playerName = "";
+  let scores = { teknologi: 0, bisnis: 0, seni: 0 };
+
+  function startGame() {
+    playerName = document.getElementById("player-name").value.trim();
+    if (!playerName) {
+      alert("Silakan masukkan nama terlebih dahulu!");
+      return;
+    }
+    document.getElementById("start-screen").classList.add("hidden");
+    document.getElementById("quiz-screen").classList.remove("hidden");
+    showQuestion();
+  }
+
+  function showQuestion() {
+    const q = questions[currentQuestionIndex];
+    document.getElementById("question-text").innerText = q.q;
+    const container = document.getElementById("options-container");
+    container.innerHTML = "";
+
+    q.options.forEach(opt => {
+      const btn = document.createElement("button");
+      btn.innerText = opt.text;
+      btn.className = "option-btn";
+      btn.onclick = () => selectOption(opt.type);
+      container.appendChild(btn);
+    });
+  }
+
+  function selectOption(type) {
+    scores[type]++;
+    currentQuestionIndex++;
+
+    if (currentQuestionIndex < questions.length) {
+      showQuestion();
+    } else {
+      finishGame();
+    }
+  }
+
+  function finishGame() {
+    document.getElementById("quiz-screen").classList.add("hidden");
+    document.getElementById("result-screen").classList.remove("hidden");
+
+    // Menentukan minat tertinggi
+    let highestType = Object.keys(scores).reduce((a, b) => scores[a] > scores[b] ? a : b);
+    let finalResult = resultsInfo[highestType];
+
+    document.getElementById("display-name").innerText = playerName;
+    document.getElementById("result-title").innerText = finalResult.title;
+    document.getElementById("result-desc").innerText = finalResult.desc;
+
+    sendToGoogleSheet(playerName, finalResult.title);
+  }
+
+  function sendToGoogleSheet(nama, minat) {
+    document.getElementById("status-msg").innerText = "Menyimpan hasil ke server...";
+    
+    fetch(SCRIPT_URL, {
+      method: "POST",
+      mode: "no-cors",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ nama: nama, minat: minat })
+    })
+    .then(() => {
+      document.getElementById("status-msg").innerText = "Data berhasil disimpan di Google Sheet!";
+    })
+    .catch(err => {
+      document.getElementById("status-msg").innerText = "Gagal menyimpan data.";
+      console.error(err);
+    });
+  }
+</script>
+
+</body>
+</html>
